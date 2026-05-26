@@ -8,10 +8,7 @@ Manifest.toml
 .ipynb_checkpoints/
 
 # Generated outputs (regenerable from the notebook)
-output/
-tf_handoff/
 tf_handoff.zip
-tf_handoff.xlsx
 alpha_w2=*.csv
 
 # OS
