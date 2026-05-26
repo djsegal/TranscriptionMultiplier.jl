@@ -20,7 +20,7 @@ README inside that folder explains the conventions and units.
 `notebook/transcription_fit.ipynb`. End-to-end runtime is about a minute on a
 modern laptop.
 
-**If you don't want to run the notebook yourself**, the reference figures in
+**If you don't want to run the [notebook](http://github.com/djsegal/tf-coupling-fit/blob/main/notebook/transcription_fit.ipynb) yourself**, the reference figures in
 `figures_reference/` show what each plot should look like.
 
 ## Quick start (re-running the notebook)
