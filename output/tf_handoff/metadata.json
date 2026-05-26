@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "generated_at_utc": "2026-05-26T11:54:04.402",
+  "model": "S_i(t) = sum_j alpha_ij * TF_j(t - tau)",
+  "fit_params": {
+    "tau_min": 20.0,
+    "w2_l1_penalty": 5.0,
+    "max_nans_per_gene": 4,
+    "molecules_per_cell_reference": 60000,
+    "solver": "HiGHS via JuMP",
+    "loss": "L1 on residuals + L1 penalty on alpha"
+  },
+  "source_data": {
+    "expression": "Teufel et al. 2019 (Scientific Reports 9:3343), WT unstressed RPM",
+    "network": "Teufel et al. 2019 supplementary table 4"
+  },
+  "counts": {
+    "n_substrates": 2406,
+    "n_tfs": 112,
+    "n_candidate_edges": 5609,
+    "n_fitted_edges_nonzero": 3929,
+    "n_timepoints_total": 22,
+    "n_timepoints_used_in_fit": 18
+  },
+  "units": {
+    "alpha": "dimensionless coupling (molecules/cell per molecules/cell)",
+    "expression": "molecules per cell",
+    "tau": "minutes",
+    "time": "minutes since alpha-factor release"
+  }
+}
