@@ -141,7 +141,3 @@ of the yeast cell cycle." *Scientific Reports* 9: 3343.
 If you use these alpha values in your work, please credit the source paper
 (Teufel et al. 2019) and link back to this repo so others can find the
 fitting methodology.
-
-## Questions
-
-Open an issue or contact Daniel.
