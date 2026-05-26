@@ -10,7 +10,20 @@ rate. This repo provides those coupling values (~3,900 non-zero edges across
 ~2,400 substrate genes and ~150 TFs), plus the analysis notebook that
 generated them.
 
-## Quick start
+## How to use this repo
+
+**If you just want the fitted alpha values**, go straight to `output/tf_handoff/`.
+The files are committed to the repo so you don't need to run anything. The
+README inside that folder explains the conventions and units.
+
+**If you want to inspect or rerun the analysis**, open
+`notebook/transcription_fit.ipynb`. End-to-end runtime is about a minute on a
+modern laptop.
+
+**If you don't want to run the notebook yourself**, the reference figures in
+`figures_reference/` show what each plot should look like.
+
+## Quick start (re-running the notebook)
 
 You need Julia 1.8 or later.
 
@@ -21,51 +34,59 @@ julia --project=. -e "using Pkg; Pkg.instantiate()"
 ```
 
 Then open `notebook/transcription_fit.ipynb` in Jupyter (with the Julia kernel)
-and Run All. End-to-end runtime is about a minute on a modern laptop.
-
-The notebook reads from `data/` and writes the handoff to `output/tf_handoff/`
-(folder), `output/tf_handoff.zip` (single archive), and `output/tf_handoff.xlsx`
-(Excel workbook with one sheet per file). The `output/` folder is in `.gitignore`
-so generated files don't get committed.
-
-If you don't want to run the notebook yourself, the reference figures in
-`figures_reference/` show what each plot should look like.
+and Run All. The notebook reads from `data/` and overwrites the contents of
+`output/tf_handoff/` plus `output/tf_handoff.xlsx`. The .zip archive of the
+handoff is in `.gitignore` since it can be re-created from the folder contents.
 
 ## What's in this repo
 
 ```
 tf-coupling-fit/
-|-- README.md                  <- you are here
-|-- LICENSE                    <- MIT
-|-- Project.toml               <- Julia dependencies (pinned)
+|-- README.md                   <- you are here
+|-- LICENSE                     <- MIT
+|-- Project.toml                <- Julia dependencies (pinned)
 |-- .gitignore
 |-- notebook/
-|   `-- transcription_fit.ipynb   <- the analysis, end to end
+|   `-- transcription_fit.ipynb    <- the analysis, end to end
 |-- data/
 |   |-- WT_unstressed_readspermillionreads.csv   <- Teufel 2019 RNA-seq
 |   `-- TF_von_Teufel.csv                        <- Teufel 2019 TF network
-`-- figures_reference/
-    |-- 01_nan_distribution.png       <- preview of the notebook plots,
-    |-- 02_tf_coverage.png            <-   so you can see what to expect
-    |-- 03_canaries_max_nans_4.png    <-   without running anything
-    |-- 04_cln2_strict_vs_relaxed.png
-    |-- 05_lcurve.png
-    `-- 06_fit_quality.png
+|-- figures_reference/
+|   |-- 01_nan_distribution.png        <- preview of the notebook plots,
+|   |-- 02_tf_coverage.png             <-   so you can see what to expect
+|   |-- 03_canaries_max_nans_4.png     <-   without running anything
+|   |-- 04_cln2_strict_vs_relaxed.png
+|   |-- 05_lcurve.png
+|   `-- 06_fit_quality.png
+`-- output/
+    |-- tf_handoff.xlsx                <- everything below, as one workbook
+    `-- tf_handoff/                    <- the handoff folder
+        |-- README.md                   <-   conventions, units, load snippet
+        |-- metadata.json               <-   fit params, source data, counts
+        |-- alpha_matrix.csv            <-   dense n_substrates x n_tfs matrix
+        |-- alpha_edges.csv             <-   long form, all candidate edges
+        |-- tf_network_candidate.csv    <-   structural network from Teufel
+        `-- tf_network_fitted.csv       <-   only edges with abs(alpha) > 0
 ```
 
 ## How to use the output in the whole-cell model
 
-After running the notebook, you have `output/tf_handoff/` with:
+The fitted coupling values are in `output/tf_handoff/`. Pick the file that
+matches how your downstream code wants the data:
 
-| File | What to do with it |
-|---|---|
-| `alpha_matrix.csv` | Load as a dense `n_substrates x n_tfs` matrix; multiply with the current TF mRNA vector (delayed by tau) to get per-substrate transcription rates. |
-| `tf_network_fitted.csv` | Long-form edge list of fitted couplings, if you prefer sparse representation. |
-| `tf_network_candidate.csv` | Structural network from Teufel, if you want to refit alpha with a different method. |
-| `metadata.json` | Fit parameters, timestamp, counts. Read it before trusting anything. |
-| `README.md` | Conventions, units, what `alpha = 0` means. |
+| File                       | What to do with it                                                                                                                                 |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `alpha_matrix.csv`         | Load as a dense `n_substrates x n_tfs` matrix; multiply with the current TF mRNA vector (delayed by tau) to get per-substrate transcription rates. |
+| `tf_network_fitted.csv`    | Long-form edge list of fitted couplings, if you prefer sparse representation.                                                                      |
+| `tf_network_candidate.csv` | Structural network from Teufel, if you want to refit alpha with a different method.                                                                |
+| `alpha_edges.csv`          | Long-form including the L1-zeroed edges. Useful if you need to know which candidate edges the fit rejected.                                        |
+| `metadata.json`            | Fit parameters, timestamp, counts. Read it before trusting anything.                                                                               |
+| `README.md`                | Conventions, units, what `alpha = 0` means.                                                                                                        |
 
-Example Julia code (from inside the handoff folder):
+`output/tf_handoff.xlsx` is the same six files bundled into one Excel
+workbook, one sheet per file. Convenient for emailing.
+
+Example Julia code (from inside `output/tf_handoff/`):
 
 ```julia
 using DataFrames, CSV, JSON3
