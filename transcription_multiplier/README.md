@@ -65,7 +65,9 @@ the multiplier properties (unit mean, non-negativity, all-activator identity,
 
 - **Structure:** 86% of fitted edges are corroborated by at least one of six
   independent sources (ChIP binding, two YEASTRACT vintages, a curated benchmark,
-  SNAP, textbook edges); 49% by two or more.
+  SNAP, textbook edges); 49% by two or more. Scored as a ranked classifier against
+  the Inferelator gold standard, the network reaches AUROC 0.815 (precision 0.48, a
+  29x lift over the edge prior; recall 0.68).
 - **Signs:** agree with database labels 71% of the time overall, 94% against
   curated textbook edges. Coupling *magnitude* is fit-derived and does not track
   database presence (corr ~ 0.01).
