@@ -25,11 +25,11 @@ makedocs(
     sitename = "TranscriptionMultiplier.jl",
     modules  = [TranscriptionMultiplier],
     authors  = "Daniel J. Segal",
-    pages    = ["Home" => "index.md", "Tutorials" => ["tutorials/multiplier_explorer.md"]],
+    pages    = ["Home" => "index.md", "Showcase" => ["showcase/q_amplitude.md", "showcase/alpha_denominator.md", "showcase/trust_tiers.md"]],
     # Run doctests during the build; fail on broken/missing cross-references.
     doctest  = true,
     checkdocs = :exports,
-    format   = Documenter.HTML(; prettyurls = get(ENV, "CI", "false") == "true"),
+    format   = Documenter.HTML(; prettyurls = false),
 )
 
 # Publish to GitHub Pages (gh-pages branch). A no-op when run locally; on CI it
