@@ -25,7 +25,7 @@ makedocs(
     sitename = "TranscriptionMultiplier.jl",
     modules  = [TranscriptionMultiplier],
     authors  = "Daniel J. Segal",
-    pages    = ["Home" => "index.md"],
+    pages    = ["Home" => "index.md", "Tutorials" => ["tutorials/multiplier_explorer.md"]],
     # Run doctests during the build; fail on broken/missing cross-references.
     doctest  = true,
     checkdocs = :exports,
