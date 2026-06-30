@@ -1,5 +1,7 @@
 # TranscriptionMultiplier.jl
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21082581.svg)](https://doi.org/10.5281/zenodo.21082581)
+
 Turn the fitted TF couplings in `output/tf_handoff/` into a cell-cycle dependent
 transcription rate for a dynamic (e.g. whole-cell) model, without changing each
 gene's average rate. Julia-native, matching the stack of the fit itself.

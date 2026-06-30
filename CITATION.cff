@@ -8,6 +8,7 @@ authors:
     orcid: "https://orcid.org/0009-0009-7489-7723"
 url: "https://github.com/djsegal/TranscriptionMultiplier.jl"
 repository-code: "https://github.com/djsegal/TranscriptionMultiplier.jl"
+doi: "10.5281/zenodo.21082581"
 license: MIT
 keywords:
   - transcription factor
