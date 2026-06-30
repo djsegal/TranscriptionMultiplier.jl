@@ -1,7 +1,7 @@
 name = "TranscriptionMultiplier"
 uuid = "6b31a3da-037d-4a9f-9abc-a5fe60479067"
 authors = ["Daniel J. Segal"]
-version = "1.0.1"
+version = "1.0.2"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
