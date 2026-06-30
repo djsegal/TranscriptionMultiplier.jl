@@ -4,6 +4,18 @@ All notable changes to the `TranscriptionMultiplier` package are documented here
 This project loosely follows [Keep a Changelog](https://keepachangelog.com/) and
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- **Moved the implementation into `src/`.** `multiplier.jl` and `refit.jl` now
+  live in `src/` alongside the module rather than at the repository root, so the
+  package has a conventional layout. Package-owned imports are made explicit
+  (`import CSV, DataFrames, JuMP, HiGHS`; module-qualified call sites), which lets
+  the ExplicitImports and JET static-analysis gates run — both are now wired into
+  the test suite next to Aqua. No change to the couplings, the multiplier, the
+  released data, or the public API (`using TranscriptionMultiplier; multiplier(...)`).
+
 ## [1.0.1] - 2026-06-26
 
 ### Changed

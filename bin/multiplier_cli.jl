@@ -22,8 +22,8 @@ const PKG_DIR = normpath(joinpath(@__DIR__, ".."))
 try
     @eval using TranscriptionMultiplier
 catch
-    include(joinpath(PKG_DIR, "multiplier.jl"))
-    include(joinpath(PKG_DIR, "refit.jl"))
+    include(joinpath(PKG_DIR, "src", "multiplier.jl"))
+    include(joinpath(PKG_DIR, "src", "refit.jl"))
 end
 using CSV, DataFrames
 

@@ -9,7 +9,7 @@ notebook, so it reproduces the committed alpha exactly. Used by runtests.jl.
     reg   = build_regulators(edges, Set(genes))
     res   = fit_all(ta, Dict(g=>i for (i,g) in enumerate(genes)), expr, reg)
 =#
-using CSV, DataFrames, JuMP, HiGHS, Statistics
+import CSV, DataFrames, HiGHS, JuMP, Statistics
 
 "Assumed mRNA molecules per cell at the genome-wide mean level (RPM→molecules scale)."
 const MOLECULES_PER_CELL = 60_000
@@ -86,7 +86,7 @@ all(isfinite, expr)                                             # true
 """
 function load_rna_seq(path::String; max_nans::Int = DEFAULT_MAX_NANS)
     isfile(path) || throw(ArgumentError("load_rna_seq: file not found: $path"))
-    df = CSV.read(path, DataFrame)
+    df = CSV.read(path, DataFrames.DataFrame)
     time_cols = String[]; time_axis_raw = Float64[]
     for c in names(df)
         v = tryparse(Float64, string(c))
@@ -97,8 +97,8 @@ function load_rna_seq(path::String; max_nans::Int = DEFAULT_MAX_NANS)
     ord = sortperm(time_axis_raw)
     time_cols = time_cols[ord]; time_axis = time_axis_raw[ord]
     is_missing(v) = ismissing(v) || (v isa Number && isnan(v))
-    keep = trues(nrow(df))
-    for i in 1:nrow(df)
+    keep = trues(DataFrames.nrow(df))
+    for i in 1:DataFrames.nrow(df)
         nan_count = 0
         for c in time_cols
             is_missing(df[i, c]) && (nan_count += 1)
@@ -109,7 +109,7 @@ function load_rna_seq(path::String; max_nans::Int = DEFAULT_MAX_NANS)
     df[!, :name] = String[ismissing(x) ? "" : String(strip(string(x))) for x in df.name]
     df = filter(row -> !isempty(row.name) && lowercase(row.name) != "nan", df)
     gene_names = Vector{String}(df.name)
-    T = length(time_cols); G = nrow(df)
+    T = length(time_cols); G = DataFrames.nrow(df)
     expression = Matrix{Float64}(undef, G, T)
     for j in 1:T
         col = df[!, time_cols[j]]
@@ -144,7 +144,7 @@ Throws an `ArgumentError` if `csv_path` does not exist.
 """
 function load_tf_network(csv_path::String)
     isfile(csv_path) || throw(ArgumentError("load_tf_network: file not found: $csv_path"))
-    df = CSV.read(csv_path, DataFrame)
+    df = CSV.read(csv_path, DataFrames.DataFrame)
     edges = Tuple{String,String}[]
     for row in eachrow(df)
         tf_val = row[1]; sub_val = row[3]
@@ -232,18 +232,18 @@ function fit_substrate(sub_series::AbstractVector{Float64}, tf_matrix::AbstractM
     T == length(sub_series) ||
         throw(ArgumentError("fit_substrate: tf_matrix has $T columns (timepoints) " *
                             "but sub_series has length $(length(sub_series)); they must match"))
-    m = Model(HiGHS.Optimizer); set_silent(m)
-    @variable(m, a_plus[1:k]  >= 0); @variable(m, a_minus[1:k] >= 0)
-    @variable(m, f_plus[1:T]  >= 0); @variable(m, f_minus[1:T] >= 0)
-    @constraint(m, [t = 1:T],
+    m = JuMP.Model(HiGHS.Optimizer); JuMP.set_silent(m)
+    JuMP.@variable(m, a_plus[1:k]  >= 0); JuMP.@variable(m, a_minus[1:k] >= 0)
+    JuMP.@variable(m, f_plus[1:T]  >= 0); JuMP.@variable(m, f_minus[1:T] >= 0)
+    JuMP.@constraint(m, [t = 1:T],
         sum(tf_matrix[j, t] * (a_plus[j] - a_minus[j]) for j in 1:k) + f_plus[t] - f_minus[t] == sub_series[t])
-    @objective(m, Min, sum(f_plus[t] + f_minus[t] for t in 1:T) + w2 * sum(a_plus[j] + a_minus[j] for j in 1:k))
-    optimize!(m)
-    if termination_status(m) != OPTIMAL
+    JuMP.@objective(m, Min, sum(f_plus[t] + f_minus[t] for t in 1:T) + w2 * sum(a_plus[j] + a_minus[j] for j in 1:k))
+    JuMP.optimize!(m)
+    if JuMP.termination_status(m) != JuMP.OPTIMAL
         return zeros(k), Inf, false
     end
-    alpha = [value(a_plus[j]) - value(a_minus[j]) for j in 1:k]
-    resid = sum(value(f_plus[t]) + value(f_minus[t]) for t in 1:T)
+    alpha = [JuMP.value(a_plus[j]) - JuMP.value(a_minus[j]) for j in 1:k]
+    resid = sum(JuMP.value(f_plus[t]) + JuMP.value(f_minus[t]) for t in 1:T)
     return alpha, resid, true
 end
 

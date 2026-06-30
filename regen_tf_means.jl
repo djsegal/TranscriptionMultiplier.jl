@@ -5,7 +5,7 @@
 # multiplier mean-preserving (<M_x>_t = 1) to machine precision.
 #   julia --project=. regen_tf_means.jl
 using CSV, DataFrames
-include(joinpath(@__DIR__, "refit.jl"))
+include(joinpath(@__DIR__, "src", "refit.jl"))
 
 const REPO = @__DIR__
 const EXPR = joinpath(REPO, "data", "WT_unstressed_readspermillionreads.csv")

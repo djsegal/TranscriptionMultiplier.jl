@@ -6,7 +6,7 @@
 # Reuses refit.jl::load_rna_seq for the exact interpolated 22-point TF trajectories.
 #   julia --project=. regen_derived.jl [--validate]
 using CSV, DataFrames, Statistics
-include(joinpath(@__DIR__, "refit.jl"))
+include(joinpath(@__DIR__, "src", "refit.jl"))
 
 const REPO = @__DIR__
 const EXPR = joinpath(REPO, "data", "WT_unstressed_readspermillionreads.csv")

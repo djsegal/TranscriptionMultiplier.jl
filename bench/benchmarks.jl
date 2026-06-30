@@ -27,8 +27,8 @@ try
     @eval const FIT_SUBSTRATE = TranscriptionMultiplier.fit_substrate
 catch err
     @warn "Could not load TranscriptionMultiplier as a module; including scripts directly." err
-    include(joinpath(PKG_DIR, "multiplier.jl"))
-    include(joinpath(PKG_DIR, "refit.jl"))
+    include(joinpath(PKG_DIR, "src", "multiplier.jl"))
+    include(joinpath(PKG_DIR, "src", "refit.jl"))
     @eval const M             = multiplier
     @eval const FIT_SUBSTRATE = fit_substrate
 end

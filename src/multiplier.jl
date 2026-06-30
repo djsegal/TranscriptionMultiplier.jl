@@ -12,7 +12,7 @@ The TFᵢ_mean values in data/tf_means.csv are the discrete means of the same
 NaN-interpolated 22-point trajectory the multiplier is evaluated on, so ⟨M⟩ₜ = 1
 holds to machine precision for every gene (not just genes with complete TF data).
 =#
-using CSV, DataFrames
+import CSV, DataFrames
 
 """
     DATA_DIR
@@ -20,7 +20,7 @@ using CSV, DataFrames
 Absolute path to the package's bundled `data/` directory (fitted network, TF
 means, q_x scores). Default argument to [`load_handoff`](@ref).
 """
-const DATA_DIR = joinpath(@__DIR__, "data")
+const DATA_DIR = joinpath(dirname(@__DIR__), "data")
 
 """
     load_handoff(dir::AbstractString=DATA_DIR) -> (edges, means)
@@ -57,13 +57,13 @@ function load_handoff(dir::AbstractString=DATA_DIR)
         isfile(joinpath(dir, f)) ||
             throw(ArgumentError("load_handoff: missing required file '$f' in $dir"))
     end
-    e = CSV.read(joinpath(dir, "tf_network_fitted.csv"), DataFrame)
+    e = CSV.read(joinpath(dir, "tf_network_fitted.csv"), DataFrames.DataFrame)
     edges = Dict{String,Vector{Tuple{String,Float64}}}()
     for row in eachrow(e)
         push!(get!(edges, row.substrate, Tuple{String,Float64}[]),
               (row.tf, Float64(row.alpha)))
     end
-    m = CSV.read(joinpath(dir, "tf_means.csv"), DataFrame)
+    m = CSV.read(joinpath(dir, "tf_means.csv"), DataFrames.DataFrame)
     means = Dict{String,Float64}()
     for row in eachrow(m)
         ismissing(row.tf_mean_rpm) || (means[row.tf] = Float64(row.tf_mean_rpm))
@@ -140,13 +140,13 @@ function save_handoff(dir::AbstractString, edges::AbstractDict, means::AbstractD
         push!(esub, sub); push!(etf, tf); push!(ealpha, Float64(a))
     end
     CSV.write(joinpath(dir, "tf_network_fitted.csv"),
-              DataFrame(substrate = esub, tf = etf, alpha = ealpha))
+              DataFrames.DataFrame(substrate = esub, tf = etf, alpha = ealpha))
     mtf = String[]; mval = Float64[]
     for tf in sort(collect(keys(means)))
         push!(mtf, tf); push!(mval, Float64(means[tf]))
     end
     CSV.write(joinpath(dir, "tf_means.csv"),
-              DataFrame(tf = mtf, tf_mean_rpm = mval))
+              DataFrames.DataFrame(tf = mtf, tf_mean_rpm = mval))
     return dir
 end
 

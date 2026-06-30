@@ -33,8 +33,8 @@ and `q_x in [0,1]` an optional per-gene cell-cycle weight. This "deviation form"
 ## Use it (Julia)
 
 ```julia
-include("multiplier.jl")
-edges, means = load_handoff()                 # reads data/
+using TranscriptionMultiplier
+edges, means = load_handoff()                 # reads the bundled data/
 levels = Dict("SWI4" => 220.0, "STE12" => 80.0)  # current TF amounts (any consistent unit)
 M = multiplier("CLN2", levels, edges, means; q = 1.0)
 k_eff = k_base * M
@@ -46,15 +46,16 @@ stores. **Use `q_x` rather than `q = 1`** (see validation below).
 ## Reproduce the fit and run the tests (Julia)
 
 ```bash
-julia --project=. runtests.jl
+julia --project=. -e 'using Pkg; Pkg.test()'
 ```
 
-`refit.jl` re-implements the fitting linear program (JuMP/HiGHS) and reproduces the
-committed `alpha` exactly (max |delta alpha| = 0). `runtests.jl` checks that, plus
+`src/refit.jl` re-implements the fitting linear program (JuMP/HiGHS) and reproduces
+the committed `alpha` exactly (max |delta alpha| = 0). The suite checks that, plus
 the multiplier properties (unit mean, non-negativity, all-activator identity,
-`q_x` amplitude scaling, and machine-precision mean preservation across all genes).
-With no third-party data present, 28 checks pass and the joint-fit check is skipped;
-with the gold standard fetched (below), all 35 pass.
+`q_x` amplitude scaling, and machine-precision mean preservation across all genes),
+and the package-quality gates (Aqua, ExplicitImports, JET). With no third-party data
+present the joint-fit headline check is skipped; fetch the gold standard (below) to
+run it too.
 
 ## Reproduce the headline cross-dataset result (Julia)
 
@@ -95,7 +96,7 @@ julia --project=. joint_score.jl --refit
 ```
 
 `joint_fit.jl` builds the joint multi-dataset design and shared-alpha L1 LP (the
-same residual-L1 + `w2`*L1(alpha) program as `refit.jl`, with every dataset's rows
+same residual-L1 + `w2`*L1(alpha) program as `src/refit.jl`, with every dataset's rows
 stacked). `joint_score.jl` loads the signed gold, scores trapezoid AUROC on the
 common rectangle, and runs the fast Sun & Xu DeLong test. The from-raw re-solve
 reproduces the shipped joint couplings to < 5e-7 per edge.
@@ -108,7 +109,7 @@ the fetched gold standard.
 
 | Number | Reproduce from | Needs fetch? |
 | --- | --- | --- |
-| `alpha` (single-dataset couplings), max delta = 0 | `refit.jl` + `data/` (shipped) | no |
+| `alpha` (single-dataset couplings), max delta = 0 | `src/refit.jl` + `data/` (shipped) | no |
 | single-dataset AUROC 0.815 | shipped `tf_network_fitted.csv` + gold | gold + SGD only |
 | joint AUROC 0.899 / DeLong +0.071 (scored) | shipped joint couplings + gold | gold + SGD only |
 | joint couplings themselves, then 0.899 / +0.071 | `joint_fit.jl` re-solve from raw | all five datasets + gold |

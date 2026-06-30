@@ -4,10 +4,12 @@
 # Run from the repo root (uses data and output relative to this file).
 
 using Test, CSV, DataFrames, Statistics
-include(joinpath(@__DIR__, "refit.jl"))
-include(joinpath(@__DIR__, "multiplier.jl"))   # load_handoff/save_handoff/export_handoff_json + Dict multiplier
-import TranscriptionMultiplier            # the module, for the Aqua quality gate
+include(joinpath(@__DIR__, "src", "refit.jl"))
+include(joinpath(@__DIR__, "src", "multiplier.jl"))   # load_handoff/save_handoff/export_handoff_json + Dict multiplier
+import TranscriptionMultiplier            # the module, for the package-quality gates
 using Aqua
+using ExplicitImports
+using JET
 
 const REPO = @__DIR__
 const EXPR = joinpath(REPO, "data", "WT_unstressed_readspermillionreads.csv")
@@ -17,11 +19,15 @@ const FITTED = joinpath(@__DIR__, "data", "tf_network_fitted.csv")
 
 @testset "tf-coupling-fit multiplier" begin
 
-    @testset "Q — Aqua (deps/compat/piracy/exports/unbound)" begin
+    @testset "Q — Aqua + ExplicitImports (deps/compat/piracy/exports/imports)" begin
         Aqua.test_all(TranscriptionMultiplier; ambiguities=false)
+        @test check_no_implicit_imports(TranscriptionMultiplier) === nothing
+        @test check_all_explicit_imports_via_owners(TranscriptionMultiplier) === nothing
     end
-    # ExplicitImports + JET gates await moving multiplier.jl/refit.jl into src/ —
-    # they can't analyse the root-level include layout. Tracked as a follow-up.
+
+    @testset "Q — JET package analysis" begin
+        JET.test_package(TranscriptionMultiplier; target_defined_modules=true)
+    end
 
     # load once
     time_axis, genes, expr = load_rna_seq(EXPR)

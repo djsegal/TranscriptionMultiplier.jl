@@ -14,8 +14,8 @@ const _loaded_module = try
     @eval using TranscriptionMultiplier
     true
 catch
-    include(joinpath(@__DIR__, "multiplier.jl"))
-    include(joinpath(@__DIR__, "refit.jl"))
+    include(joinpath(@__DIR__, "src", "multiplier.jl"))
+    include(joinpath(@__DIR__, "src", "refit.jl"))
     false
 end
 const M = _loaded_module ? TranscriptionMultiplier.multiplier : multiplier

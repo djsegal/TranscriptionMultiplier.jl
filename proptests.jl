@@ -22,8 +22,8 @@ const _mult = let
         @eval using TranscriptionMultiplier
         TranscriptionMultiplier.multiplier
     catch
-        include(joinpath(@__DIR__, "multiplier.jl"))   # Dict method + load_handoff
-        include(joinpath(@__DIR__, "refit.jl"))        # vector method (multiplier(alphas, ratios))
+        include(joinpath(@__DIR__, "src", "multiplier.jl"))   # Dict method + load_handoff
+        include(joinpath(@__DIR__, "src", "refit.jl"))        # vector method (multiplier(alphas, ratios))
         multiplier
     end
 end

@@ -1,7 +1,7 @@
 # Python adapter (downstream convenience)
 
-The canonical implementation of this project is **Julia** (see `../multiplier.jl`,
-`../refit.jl`, and the test suite `../runtests.jl`). All fitting, validation, and the
+The canonical implementation of this project is **Julia** (see `../src/multiplier.jl`,
+`../src/refit.jl`, and the test suite `../runtests.jl`). All fitting, validation, and the
 released data are produced and checked in Julia.
 
 This directory is a **thin Python adapter** provided only so a group whose pipeline is
@@ -18,4 +18,4 @@ M_x(t) = 1 + q_x * ( sum_i alpha_i * (TF_i(t)/TF_i_mean - 1) ) / sum_i |alpha_i|
 ```
 
 Use the released per-gene `q_x` (from `../data/qx_scores.csv`), not `q = 1`. If you can
-run Julia, prefer the canonical `multiplier.jl`.
+run Julia, prefer the canonical `src/multiplier.jl`.
