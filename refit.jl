@@ -73,17 +73,15 @@ expression::Matrix{Float64})` where `expression` is `genes × timepoints`.
 Throws an `ArgumentError` if `path` does not exist.
 
 # Example
-```jldoctest
-julia> using TranscriptionMultiplier
 
-julia> ta, genes, expr = load_rna_seq(joinpath(DATA_DIR, "..", "..", "data",
-                                                "WT_unstressed_readspermillionreads.csv"));
+The RNA-seq matrix is supplied by the caller (genes × timepoints, in RPM); it is
+not bundled with the package. Given a path to such a file:
 
-julia> size(expr, 1) == length(genes) && size(expr, 2) == length(ta)
-true
-
-julia> all(isfinite, expr)
-true
+```julia
+using TranscriptionMultiplier
+ta, genes, expr = load_rna_seq("WT_unstressed_readspermillionreads.csv")
+size(expr, 1) == length(genes) && size(expr, 2) == length(ta)   # true
+all(isfinite, expr)                                             # true
 ```
 """
 function load_rna_seq(path::String; max_nans::Int = DEFAULT_MAX_NANS)

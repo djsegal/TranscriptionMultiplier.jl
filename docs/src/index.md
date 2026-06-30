@@ -58,6 +58,8 @@ multiplier
 
 ```@docs
 load_handoff
+save_handoff
+export_handoff_json
 DATA_DIR
 ```
 
